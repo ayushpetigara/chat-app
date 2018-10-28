@@ -4,6 +4,8 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+// adding the generate message
+const {generateMessage} = require('./utils/message');
 // adding the path to the public dir to access the html
 const publicPath = path.join(__dirname, '../public');
 // defining the port variable
@@ -27,23 +29,11 @@ io.on('connection', (socket) => {
     console.log('Message created at', message);
 
     // greeting
-    socket.emit('newMessage', {
-      from: 'Admin',
-      text: 'Welcome to the chat app',
-      createdAt: new Date().getTime()
-    });
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
     // botifying new user joined
-    socket.broadcast.emit('newMessage', {
-      from: 'Admin',
-      text: 'New user joined',
-      createdAt: new Date().getTime()
-    });
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
     // io.emit an event to every single connection
-    io.emit('newMessage', {
-      from: message.from,
-      text: message.text,
-      createdAt: new Date().getTime()
-    });
+    io.emit('newMessage', generateMessage(message.from, message.text));
     // socket.broadcast.emit('newMessage', {
     //   from: message.from,
     //   text: message.text,
