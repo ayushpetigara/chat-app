@@ -5,7 +5,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 // adding the generate message
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 // adding the path to the public dir to access the html
 const publicPath = path.join(__dirname, '../public');
 // defining the port variable
@@ -33,16 +33,16 @@ io.on('connection', (socket) => {
     console.log('Message created', message);
     // io.emit an event to every single connection
     io.emit('newMessage', generateMessage(message.from, message.text));
-    callback();
-    // socket.broadcast.emit('newMessage', {
-    //   from: message.from,
-    //   text: message.text,
-    //   createdAt: new Date().getTime()
-    // });
+    callback('This is from the server.');
   });
+
+  socket.on('createLocationMessage', (coords) => {
+    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitiude, coords.longitude));
+  });
+
   // disconnecting user
   socket.on('disconnect', () => {
-    console.log('User was disconnected');
+    console.log ('User was disconnected');
   });
 });
 
