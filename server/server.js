@@ -25,12 +25,30 @@ io.on('connection', (socket) => {
   // event listener
   socket.on('createMessage', (message) => {
     console.log('Message created at', message);
-    // emit an event to every single connection
+
+    // greeting
+    socket.emit('newMessage', {
+      from: 'Admin',
+      text: 'Welcome to the chat app',
+      createdAt: new Date().getTime()
+    });
+    // botifying new user joined
+    socket.broadcast.emit('newMessage', {
+      from: 'Admin',
+      text: 'New user joined',
+      createdAt: new Date().getTime()
+    });
+    // io.emit an event to every single connection
     io.emit('newMessage', {
       from: message.from,
       text: message.text,
       createdAt: new Date().getTime()
     });
+    // socket.broadcast.emit('newMessage', {
+    //   from: message.from,
+    //   text: message.text,
+    //   createdAt: new Date().getTime()
+    // });
   });
   // disconnecting user
   socket.on('disconnect', () => {
