@@ -48,14 +48,19 @@ io.on('connection', (socket) => {
   });
   // event listener
   socket.on('createMessage', (message, callback) => {
-    console.log('Message created', message);
+    var user = users.getUser(socket.id);
+    if(user && isRealString(message.text)) {
+      io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+    }
     // io.emit an event to every single connection
-    io.emit('newMessage', generateMessage(message.from, message.text));
     callback('');
   });
 
   socket.on('createLocationMessage', (coords) => {
-    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+    var user = users.getUser(socket.id);
+    if(user){
+      io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+    }
   });
 
   // disconnecting user

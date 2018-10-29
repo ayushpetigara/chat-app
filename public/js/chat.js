@@ -1,17 +1,17 @@
 var socket = io();
 //autoscrolling
-function scrollToBottom() {
-  // selectors
+function scrollToBottom () {
+  // Selectors
   var messages = jQuery('#messages');
-  var newMessage = messages.children('li:last-child');
-  //height
+  var newMessage = messages.children('li:last-child')
+  // Heights
   var clientHeight = messages.prop('clientHeight');
   var scrollTop = messages.prop('scrollTop');
   var scrollHeight = messages.prop('scrollHeight');
   var newMessageHeight = newMessage.innerHeight();
   var lastMessageHeight = newMessage.prev().innerHeight();
 
-  if(clientHeight + scrollTop + lastMessageHeight >= scrollHeight){
+  if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
     messages.scrollTop(scrollHeight);
   }
 }
@@ -72,7 +72,6 @@ jQuery('#message-form').on('submit', function (e) {
   var messageTextbox = jQuery('[name=message]');
 
   socket.emit('createMessage', {
-    from: 'User',
     text: messageTextbox.val()
   }, function () {
     messageTextbox.val('')
